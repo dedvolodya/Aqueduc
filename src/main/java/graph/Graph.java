@@ -1,8 +1,9 @@
 package graph;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Graph {
+public class Graph implements Serializable {
     List<Edge> edges = new ArrayList<>();
     List<Node> nodes = new ArrayList<>();
 

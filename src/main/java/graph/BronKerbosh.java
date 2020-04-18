@@ -1,5 +1,8 @@
 package graph;
 
+import utils.KeyPressThread;
+import utils.Serializer;
+
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -9,22 +12,67 @@ public class BronKerbosh {
 
     private HashSet<HashSet<Node>> cliques = new HashSet<>();
     private Graph graph;
+    private KeyPressThread stopThread = new KeyPressThread("Q");
+    private String graphFile;
+    private String rFile;
+    private String pFile;
+    private String xFile;
 
-    public BronKerbosh(Graph graph) {
-        this.graph = graph;
+    public BronKerbosh(String graphFile, String rFile, String pFile, String xFile) {
+        this.graphFile = graphFile;
+        this.rFile = rFile;
+        this.pFile = pFile;
+        this.xFile = xFile;
     }
 
-    public HashSet<HashSet<Node>> findMaxCliques() {
-        HashSet<Node> p = new HashSet<>();
+    public BronKerbosh withNewGraph(Graph graph) {
+        this.graph = graph;
+        return this;
+    }
+
+    public BronKerbosh withLoadGraph() {
+        this.graph = Serializer.loadGraph(this.graphFile);
+        return this;
+    }
+
+    public HashSet<HashSet<Node>> startFindMaxCliques() {
+        stopThread.start();
         HashSet<Node> r = new HashSet<>();
+        HashSet<Node> p = new HashSet<>();
         HashSet<Node> x = new HashSet<>();
         p.addAll(graph.getNodes());
         findAllCliques(r, p, x);
+        saveIntermediateResult(r, p, x);
         filterCliques();
         return cliques;
     }
 
+    public HashSet<HashSet<Node>> continueFindMaxCliques() {
+        stopThread.start();
+        HashSet<Node> r = Serializer.loadSet(rFile);
+        HashSet<Node> p = Serializer.loadSet(pFile);
+        HashSet<Node> x = Serializer.loadSet(xFile);
+        findAllCliques(r, p, x);
+        saveIntermediateResult(r, p, x);
+        filterCliques();
+        return cliques;
+    }
+
+    private void saveIntermediateResult(HashSet<Node> r, HashSet<Node> p, HashSet<Node> x) {
+        if (stopThread.isAlive()) {
+            stopThread.exit();
+        } else {
+            Serializer.serializeGraph(graph, graphFile);
+            Serializer.serializeSet(r, rFile);
+            Serializer.serializeSet(p, pFile);
+            Serializer.serializeSet(x, xFile);
+        }
+    }
+
     private void findAllCliques(HashSet<Node> r, HashSet<Node> p, HashSet<Node> x) {
+        if (!stopThread.isAlive()) {
+            return;
+        }
         if (p.isEmpty() && x.isEmpty()) {
             cliques.add(r);
         }

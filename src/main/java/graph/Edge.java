@@ -1,6 +1,8 @@
 package graph;
 
-public class Edge {
+import java.io.Serializable;
+
+public class Edge implements Serializable {
     private Node x, y;
 
     public Edge(Node x, Node y) {

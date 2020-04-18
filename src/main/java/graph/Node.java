@@ -1,6 +1,8 @@
 package graph;
 
-public class Node {
+import java.io.Serializable;
+
+public class Node implements Serializable {
     private int code;
 
     public Node(int code) {
@@ -17,5 +19,10 @@ public class Node {
             return this.code == ((Node) obj).code;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return code;
     }
 }
