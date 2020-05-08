@@ -1,71 +1,58 @@
-package graph;
+package algorithm;
 
+import graph.Graph;
+import graph.Node;
 import utils.KeyPressThread;
-import utils.Serializer;
 
 import java.util.HashSet;
 import java.util.Iterator;
 
 import static utils.Sets.*;
 
-public class BronKerbosh {
+public class BronKerboshAlgorithm {
 
     private HashSet<HashSet<Node>> cliques = new HashSet<>();
     private Graph graph;
     private KeyPressThread stopThread = new KeyPressThread("Q");
-    private String graphFile;
-    private String rFile;
-    private String pFile;
-    private String xFile;
+    private IntermediateResult intermediateResult = null;
 
-    public BronKerbosh(String graphFile, String rFile, String pFile, String xFile) {
-        this.graphFile = graphFile;
-        this.rFile = rFile;
-        this.pFile = pFile;
-        this.xFile = xFile;
+    public BronKerboshAlgorithm() {
     }
 
-    public BronKerbosh withNewGraph(Graph graph) {
+    public void withGraph(Graph g) {
+        this.graph = g;
+    }
+
+    public BronKerboshAlgorithm(Graph graph) {
         this.graph = graph;
-        return this;
     }
 
-    public BronKerbosh withLoadGraph() {
-        this.graph = Serializer.loadGraph(this.graphFile);
-        return this;
-    }
-
-    public HashSet<HashSet<Node>> startFindMaxCliques() {
+    public HashSet<HashSet<Node>> findMaxCliques(HashSet<Node> r, HashSet<Node> p, HashSet<Node> x) {
+        if (graph == null) {
+            throw new RuntimeException("Graph is not provided");
+        }
         stopThread.start();
-        HashSet<Node> r = new HashSet<>();
-        HashSet<Node> p = new HashSet<>();
-        HashSet<Node> x = new HashSet<>();
-        p.addAll(graph.getNodes());
         findAllCliques(r, p, x);
         saveIntermediateResult(r, p, x);
         filterCliques();
         return cliques;
     }
 
-    public HashSet<HashSet<Node>> continueFindMaxCliques() {
-        stopThread.start();
-        HashSet<Node> r = Serializer.loadSet(rFile);
-        HashSet<Node> p = Serializer.loadSet(pFile);
-        HashSet<Node> x = Serializer.loadSet(xFile);
-        findAllCliques(r, p, x);
-        saveIntermediateResult(r, p, x);
-        filterCliques();
-        return cliques;
+    public IntermediateResult getIntermediateResult() {
+        return this.intermediateResult;
+    }
+
+    public boolean wasInterrupted() {
+        return intermediateResult != null;
     }
 
     private void saveIntermediateResult(HashSet<Node> r, HashSet<Node> p, HashSet<Node> x) {
         if (stopThread.isAlive()) {
+            System.out.println("NOT SAVE");
             stopThread.exit();
         } else {
-            Serializer.serializeGraph(graph, graphFile);
-            Serializer.serializeSet(r, rFile);
-            Serializer.serializeSet(p, pFile);
-            Serializer.serializeSet(x, xFile);
+            System.out.println("SAVE RESULTS");
+            intermediateResult = new IntermediateResult(graph, r, p, x);
         }
     }
 

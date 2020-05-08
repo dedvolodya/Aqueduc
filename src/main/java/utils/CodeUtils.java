@@ -1,15 +1,19 @@
 package utils;
 
 public class CodeUtils {
-    public static int hemmingDistance(int a, int b, int size) {
-        int resultNum = a ^ b;
-        int distance = 0;
+
+    public static int numberWeight(int num, int size) {
+        int weight = 0;
         for (int i = 0; i < size; i++) {
-            if ((resultNum >> i & 1) > 0) {
-                distance++;
+            if ((num >> i & 1) > 0) {
+                weight++;
             }
         }
-        return distance;
+        return weight;
+    }
+
+    public static int hemmingDistance(int a, int b, int size) {
+        return numberWeight(a ^ b, size);
     }
 
     public static int[] toBinary(int number, int base) {
@@ -18,5 +22,13 @@ public class CodeUtils {
             ret[i] = number >> i & 1;
         }
         return ret;
+    }
+
+    public static int makeIntWithWeight(int weight, int size) {
+        for (int i = 0; ; i++) {
+            if (numberWeight(i, size) == weight) {
+                return i;
+            }
+        }
     }
 }

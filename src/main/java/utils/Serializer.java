@@ -1,5 +1,6 @@
 package utils;
 
+import algorithm.IntermediateResult;
 import graph.Graph;
 
 import java.io.*;
@@ -15,6 +16,14 @@ public class Serializer {
         return (Graph) loadObject(path);
     }
 
+    public static void serializeIntermediateResult(IntermediateResult result, String path) {
+        serializeObject(result, path);
+    }
+
+    public static IntermediateResult loadIntermediateResult(String path) {
+        return (IntermediateResult)loadObject(path);
+    }
+
     public static <T extends Serializable> void serializeSet(HashSet<T> set, String path) {
        serializeObject(set, path);
     }
@@ -22,6 +31,7 @@ public class Serializer {
     public static <T extends Serializable> HashSet<T> loadSet(String path) {
         return (HashSet<T>) loadObject(path);
     }
+
 
     private static void serializeObject(Object obj, String path) {
         try
