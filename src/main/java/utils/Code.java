@@ -13,8 +13,21 @@ public class Code {
     }
 
     public int[][] toMatrix() {
-        //TODO:implement me
-        return new int[0][0];
+        int[][] matrix = new int[getSize()][];
+        int i = 0;
+        for (int code : codes) {
+            int[] array = CodeUtils.toBinary(code, bitRate);
+            matrix[i++] = array;
+        }
+        return matrix;
+    }
+
+    public int getSize() {
+        return codes.size();
+    }
+
+    public int getBitRate() {
+        return bitRate;
     }
 
     @Override
