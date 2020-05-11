@@ -2,7 +2,6 @@ package algorithm;
 
 import graph.HemmingGraph;
 import graph.Node;
-import utils.KeyPressThread;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,8 +13,8 @@ public class BronKerboshAlgorithm {
 
     private HashSet<HashSet<Node>> cliques = new HashSet<>();
     private HemmingGraph graph;
-    private KeyPressThread stopThread = new KeyPressThread("Q");
     private IntermediateResult intermediateResult = null;
+    private volatile boolean stop = false;
 
 
     private Stack<HashSet<Node>> candidateStack = new Stack<>();
@@ -46,9 +45,7 @@ public class BronKerboshAlgorithm {
     }
 
     public HashSet<HashSet<Node>> findMaxCliques() {
-        stopThread.start();
         findAllCliques();
-        saveIntermediateResult();
         filterCliques();
         return cliques;
     }
@@ -62,17 +59,11 @@ public class BronKerboshAlgorithm {
     }
 
     private void saveIntermediateResult() {
-        if (stopThread.isAlive()) {
-            stopThread.exit();
-        } else {
-            intermediateResult = new IntermediateResult(graph, compsubStack, candidateStack, notStack, singletonStack);
-        }
+        intermediateResult = new IntermediateResult(graph, compsubStack, candidateStack, notStack, singletonStack);
     }
 
+    //recursive implementation
     private void findAllCliques(HashSet<Node> r, HashSet<Node> p, HashSet<Node> x) {
-        if (!stopThread.isAlive()) {
-            return;
-        }
         if (p.isEmpty() && x.isEmpty()) {
             cliques.add(r);
         }
@@ -95,10 +86,11 @@ public class BronKerboshAlgorithm {
         HashSet<Node> candidates = candidateStack.pop();
         HashSet<Node> not = notStack.pop();
         while (!candidates.isEmpty() || !compsub.isEmpty()) {
-            HashSet<Node> singleton = new HashSet<>();
-            if (!stopThread.isAlive()) {
+            if (stop) {
+                saveIntermediateResult();
                 return;
             }
+            HashSet<Node> singleton = new HashSet<>();
             if (!candidates.isEmpty()) {
                 Node node = candidates.iterator().next();
                 singleton.add(node);
@@ -128,6 +120,7 @@ public class BronKerboshAlgorithm {
                 not.addAll(singleton);
             }
         }
+        stop = true;
     }
 
     private void filterCliques() {
@@ -144,5 +137,9 @@ public class BronKerboshAlgorithm {
         }
         final int maxSize = max.size();
         cliques.removeIf(c -> c.size() != maxSize);
+    }
+
+    public void stop() {
+        stop = true;
     }
 }

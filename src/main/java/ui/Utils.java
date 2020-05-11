@@ -23,11 +23,14 @@ public class Utils {
     public static void showCodeWindow(Code code) {
         GridPane gridPane = new GridPane();
         int[][] matrixCode = code.toMatrix();
-        for (int i = 0; i < matrixCode.length; i++) {
-            for (int j = 0; j < matrixCode[i].length; j++) {
+        int mHeight = code.getSize();
+        int mWidth = code.getBitRate();
+        int x = 30, y = 30;
+        for (int i = 0; i < mHeight; i++) {
+            for (int j = 0; j < mWidth; j++) {
                 Label tf = new Label();
-                tf.setPrefHeight(30);
-                tf.setPrefWidth(30);
+                tf.setPrefHeight(y);
+                tf.setPrefWidth(x);
                 tf.setAlignment(Pos.CENTER);
                 tf.setText(String.valueOf(matrixCode[i][j]));
                 gridPane.setRowIndex(tf, i);
@@ -36,7 +39,7 @@ public class Utils {
             }
         }
 
-        Scene secondScene = new Scene(gridPane, 400, 400);
+        Scene secondScene = new Scene(gridPane, x*mWidth, y*mHeight);
         Stage window = new Stage();
         window.setTitle("Maximum Code");
         window.setScene(secondScene);
