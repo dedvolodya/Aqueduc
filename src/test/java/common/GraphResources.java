@@ -1,4 +1,4 @@
-package utils;
+package common;
 
 import graph.Edge;
 import graph.Graph;

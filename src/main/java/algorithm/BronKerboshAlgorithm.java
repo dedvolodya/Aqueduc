@@ -1,39 +1,54 @@
 package algorithm;
 
-import graph.Graph;
+import graph.HemmingGraph;
 import graph.Node;
 import utils.KeyPressThread;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Stack;
 
 import static utils.Sets.*;
 
 public class BronKerboshAlgorithm {
 
     private HashSet<HashSet<Node>> cliques = new HashSet<>();
-    private Graph graph;
+    private HemmingGraph graph;
     private KeyPressThread stopThread = new KeyPressThread("Q");
     private IntermediateResult intermediateResult = null;
 
-    public BronKerboshAlgorithm() {
-    }
 
-    public void withGraph(Graph g) {
-        this.graph = g;
-    }
+    private Stack<HashSet<Node>> candidateStack = new Stack<>();
+    private Stack<HashSet<Node>> notStack = new Stack<>();
+    private Stack<HashSet<Node>> compsubStack = new Stack<>();
+    private Stack<HashSet<Node>> singletonStack = new Stack<>();
 
-    public BronKerboshAlgorithm(Graph graph) {
+
+    public BronKerboshAlgorithm(HemmingGraph graph) {
         this.graph = graph;
     }
 
-    public HashSet<HashSet<Node>> findMaxCliques(HashSet<Node> r, HashSet<Node> p, HashSet<Node> x) {
-        if (graph == null) {
-            throw new RuntimeException("Graph is not provided");
-        }
+    public BronKerboshAlgorithm initStacks() {
+        compsubStack.add(new HashSet<>());
+        HashSet<Node> nodes = new HashSet<>();
+        nodes.addAll(graph.getNodes());
+        candidateStack.add(nodes);
+        notStack.add(new HashSet<>());
+        return this;
+    }
+
+    public BronKerboshAlgorithm withIntermediateResults(IntermediateResult results) {
+        this.compsubStack = results.getCompsub();
+        this.candidateStack = results.getCandidates();
+        this.notStack = results.getNot();
+        this.singletonStack = results.getSingleton();
+        return this;
+    }
+
+    public HashSet<HashSet<Node>> findMaxCliques() {
         stopThread.start();
-        findAllCliques(r, p, x);
-        saveIntermediateResult(r, p, x);
+        findAllCliques();
+        saveIntermediateResult();
         filterCliques();
         return cliques;
     }
@@ -46,13 +61,11 @@ public class BronKerboshAlgorithm {
         return intermediateResult != null;
     }
 
-    private void saveIntermediateResult(HashSet<Node> r, HashSet<Node> p, HashSet<Node> x) {
+    private void saveIntermediateResult() {
         if (stopThread.isAlive()) {
-            System.out.println("NOT SAVE");
             stopThread.exit();
         } else {
-            System.out.println("SAVE RESULTS");
-            intermediateResult = new IntermediateResult(graph, r, p, x);
+            intermediateResult = new IntermediateResult(graph, compsubStack, candidateStack, notStack, singletonStack);
         }
     }
 
@@ -73,6 +86,46 @@ public class BronKerboshAlgorithm {
             x = union(x, singleton);
             if (p.isEmpty()) {
                 nodeIterator = p.iterator();
+            }
+        }
+    }
+
+    private void findAllCliques() {
+        HashSet<Node> compsub = compsubStack.pop();
+        HashSet<Node> candidates = candidateStack.pop();
+        HashSet<Node> not = notStack.pop();
+        while (!candidates.isEmpty() || !compsub.isEmpty()) {
+            HashSet<Node> singleton = new HashSet<>();
+            if (!stopThread.isAlive()) {
+                return;
+            }
+            if (!candidates.isEmpty()) {
+                Node node = candidates.iterator().next();
+                singleton.add(node);
+
+                compsubStack.push((HashSet<Node>) compsub.clone());
+                candidateStack.push(candidates);
+                singletonStack.push(singleton);
+                notStack.push(not);
+
+                compsub.addAll(singleton);
+                HashSet<Node> all = new HashSet<>();
+                all.addAll(graph.getNodes());
+
+                HashSet<Node> notConnected = difference(all, graph.getChildren(node));
+                candidates = difference(candidates, notConnected);
+                candidates = difference(candidates, singleton);
+                not = difference(not, notConnected);
+            } else {
+                if (not.isEmpty()) {
+                    cliques.add(compsub);
+                }
+                compsub = compsubStack.pop();
+                candidates = candidateStack.pop();
+                singleton = singletonStack.pop();
+                not = notStack.pop();
+                candidates = difference(candidates, singleton);
+                not.addAll(singleton);
             }
         }
     }

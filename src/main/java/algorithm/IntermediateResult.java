@@ -1,37 +1,47 @@
 package algorithm;
 
 import graph.Graph;
+import graph.HemmingGraph;
 import graph.Node;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Stack;
 
 public class IntermediateResult implements Serializable {
-    private HashSet<Node> p;
-    private HashSet<Node> r;
-    private HashSet<Node> x;
-    private Graph g;
+    private Stack<HashSet<Node>> compsub;
+    private Stack<HashSet<Node>> candidates;
+    private Stack<HashSet<Node>> not;
+    private Stack<HashSet<Node>> singleton;
+    private HemmingGraph g;
 
-    public IntermediateResult(Graph g, HashSet<Node> r, HashSet<Node> p, HashSet<Node> x) {
+    public IntermediateResult(HemmingGraph g, Stack<HashSet<Node>> compsub, Stack<HashSet<Node>> candidates,
+                              Stack<HashSet<Node>> not, Stack<HashSet<Node>> singleton) {
         this.g = g;
-        this.p = p;
-        this.r = r;
-        this.x = x;
+        this.compsub = compsub;
+        this.candidates = candidates;
+        this.not = not;
+        this.singleton = singleton;
     }
 
-    public Graph getGraph() {
+    public HemmingGraph getGraph() {
         return this.g;
     }
 
-    public HashSet<Node> getPSet() {
-        return this.p;
+    public Stack<HashSet<Node>> getCompsub() {
+        return this.compsub;
     }
 
-    public HashSet<Node> getRSet() {
-        return this.r;
+    public Stack<HashSet<Node>> getCandidates() {
+        return this.candidates;
     }
 
-    public HashSet<Node> getXSet() {
-        return this.x;
+    public Stack<HashSet<Node>> getNot() {
+        return this.not;
     }
+
+    public Stack<HashSet<Node>> getSingleton() {
+        return this.singleton;
+    }
+
 }

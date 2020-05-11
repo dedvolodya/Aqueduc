@@ -1,17 +1,12 @@
-package utils;
-
-import graph.Edge;
 import graph.Graph;
 import graph.Node;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 
 import static graph.GraphBuilder.makeHammingGraph;
-import static utils.GraphResources.*;
+import static common.GraphResources.*;
 
 public class GraphTests {
 

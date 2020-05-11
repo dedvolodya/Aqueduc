@@ -10,9 +10,10 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Stack;
 
-import static utils.GraphResources.fillSimpleGraph;
-import static utils.GraphResources.simpleGraphTest;
+import static common.GraphResources.fillSimpleGraph;
+import static common.GraphResources.simpleGraphTest;
 
 public class SerializationTests {
     @Test
@@ -47,16 +48,18 @@ public class SerializationTests {
         File tmp = File.createTempFile("testIResult", "tmp");
         tmp.deleteOnExit();
         HashSet<Node> set = new HashSet<>();
+        Stack<HashSet<Node>> setStack = new Stack<>();
         set.add(new Node(1));
-        IntermediateResult result = new IntermediateResult(g, set, set, new HashSet<>());
+        setStack.push(set);
+        IntermediateResult result = new IntermediateResult(g, setStack, setStack , new Stack<>(), new Stack<>());
         Serializer.serializeIntermediateResult(result, tmp.getPath());
         IntermediateResult deserialize = Serializer.loadIntermediateResult(tmp.getPath());
         HemmingGraph resultGraph = (HemmingGraph) deserialize.getGraph();
         simpleGraphTest(resultGraph);
         Assertions.assertEquals(6, resultGraph.getBitRate());
         Assertions.assertEquals(3,  resultGraph.getDistance());
-        Assertions.assertTrue(result.getRSet().contains(new Node(1)));
-        Assertions.assertTrue(result.getPSet().contains(new Node(1)));
-        Assertions.assertFalse(result.getXSet().contains(new Node(1)));
+        Assertions.assertTrue(result.getCompsub().lastElement().contains(new Node(1)));
+        Assertions.assertTrue(result.getCandidates().lastElement().contains(new Node(1)));
+        Assertions.assertTrue(result.getNot().empty());
     }
 }
