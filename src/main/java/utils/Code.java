@@ -31,10 +31,6 @@ public class Code {
         return bitRate;
     }
 
-    public Collection<Integer> getList() {
-        return codes;
-    }
-
     public void sort() {
         Collections.sort(codes);
     }

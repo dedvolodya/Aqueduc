@@ -1,6 +1,5 @@
 package algorithm;
 
-import graph.Graph;
 import graph.HemmingGraph;
 import graph.Node;
 
