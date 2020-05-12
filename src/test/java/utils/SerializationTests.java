@@ -51,7 +51,8 @@ public class SerializationTests {
         Stack<HashSet<Node>> setStack = new Stack<>();
         set.add(new Node(1));
         setStack.push(set);
-        IntermediateResult result = new IntermediateResult(g, setStack, setStack , new Stack<>(), new Stack<>());
+        IntermediateResult result = new IntermediateResult(g, setStack, setStack , new Stack<>(), new Stack<>(),
+                new HashSet<>());
         Serializer.serializeIntermediateResult(result, tmp.getPath());
         IntermediateResult deserialize = Serializer.loadIntermediateResult(tmp.getPath());
         HemmingGraph resultGraph = (HemmingGraph) deserialize.getGraph();

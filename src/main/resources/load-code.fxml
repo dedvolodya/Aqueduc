@@ -3,13 +3,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane hgap="10" prefHeight="200.0" prefWidth="400.0" vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.NewSearchController">
+<GridPane hgap="10" prefHeight="200.0" prefWidth="400.0" vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.LoadCodeController">
     <Label GridPane.columnIndex="2" GridPane.rowIndex="2">Bit Rate</Label>
-    <Label GridPane.columnIndex="4" GridPane.rowIndex="2">Code distance</Label>
+    <Label GridPane.columnIndex="4" GridPane.rowIndex="2">Code Distance</Label>
     <Label fx:id="computingLabel" GridPane.columnIndex="2" GridPane.rowIndex="4" prefWidth="170.0"/>
     <Button fx:id="startButton" onAction="#startButtonClicked" GridPane.columnIndex="3" GridPane.rowIndex="6">Start</Button>
     <Button fx:id="stopButton" onAction="#stopButtonClicked" GridPane.columnIndex="3" GridPane.rowIndex="8">Stop</Button>
-    <TextField fx:id="bitRate" prefHeight="26.0" prefWidth="111.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-    <TextField fx:id="codeDistance" prefHeight="26.0" prefWidth="111.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+    <TextField fx:id="bitRate" prefHeight="26.0" prefWidth="111.0" GridPane.columnIndex="2" GridPane.rowIndex="3" editable="false"/>
+    <TextField fx:id="codeDistance" prefHeight="26.0" prefWidth="111.0" GridPane.columnIndex="4" GridPane.rowIndex="3" editable="false"/>
 
 </GridPane>

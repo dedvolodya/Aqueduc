@@ -2,16 +2,15 @@ package algorithm;
 
 import graph.HemmingGraph;
 import graph.Node;
+import utils.CodeUtils;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Stack;
+import java.util.*;
 
 import static utils.Sets.*;
 
 public class BronKerboshAlgorithm {
 
-    private HashSet<HashSet<Node>> cliques = new HashSet<>();
+    private HashSet<HashSet<Node>> cliques = new LinkedHashSet<>();
     private HemmingGraph graph;
     private IntermediateResult intermediateResult = null;
     private volatile boolean stop = false;
@@ -29,8 +28,17 @@ public class BronKerboshAlgorithm {
 
     public BronKerboshAlgorithm initStacks() {
         compsubStack.add(new HashSet<>());
-        HashSet<Node> nodes = new HashSet<>();
-        nodes.addAll(graph.getNodes());
+        HashSet<Node> nodes = new LinkedHashSet<>();
+        Node zero = makeNode(0);
+        Node second = makeNode(graph.getDistance());
+
+        nodes.add(zero);
+        nodes.add(second);
+        for (Node nd : graph.getNodes()) {
+            if (nd.getCode() != zero.getCode() && nd.getCode() != second.getCode()) {
+                nodes.add(nd);
+            }
+        }
         candidateStack.add(nodes);
         notStack.add(new HashSet<>());
         return this;
@@ -41,6 +49,7 @@ public class BronKerboshAlgorithm {
         this.candidateStack = results.getCandidates();
         this.notStack = results.getNot();
         this.singletonStack = results.getSingleton();
+        this.cliques = results.getCliques();
         return this;
     }
 
@@ -59,7 +68,7 @@ public class BronKerboshAlgorithm {
     }
 
     private void saveIntermediateResult() {
-        intermediateResult = new IntermediateResult(graph, compsubStack, candidateStack, notStack, singletonStack);
+        intermediateResult = new IntermediateResult(graph, compsubStack, candidateStack, notStack, singletonStack, cliques);
     }
 
     //recursive implementation
@@ -85,6 +94,7 @@ public class BronKerboshAlgorithm {
         HashSet<Node> compsub = compsubStack.pop();
         HashSet<Node> candidates = candidateStack.pop();
         HashSet<Node> not = notStack.pop();
+        int depth = compsubStack.size();
         while (!candidates.isEmpty() || !compsub.isEmpty()) {
             if (stop) {
                 saveIntermediateResult();
@@ -92,7 +102,13 @@ public class BronKerboshAlgorithm {
             }
             HashSet<Node> singleton = new HashSet<>();
             if (!candidates.isEmpty()) {
+                depth++;
                 Node node = candidates.iterator().next();
+                if (depth == 2) {
+                    if (CodeUtils.numberWeight(node.getCode(), graph.getBitRate()) != graph.getDistance()) {
+                        break;
+                    }
+                }
                 singleton.add(node);
 
                 compsubStack.push((HashSet<Node>) compsub.clone());
@@ -101,14 +117,13 @@ public class BronKerboshAlgorithm {
                 notStack.push(not);
 
                 compsub.addAll(singleton);
-                HashSet<Node> all = new HashSet<>();
-                all.addAll(graph.getNodes());
 
-                HashSet<Node> notConnected = difference(all, graph.getChildren(node));
-                candidates = difference(candidates, notConnected);
-                candidates = difference(candidates, singleton);
+                HashSet<Node> notConnected = difference(toSet(graph.getNodes()), graph.getChildren(node));
+                candidates = differenceLinkedSet(candidates, notConnected);
+                candidates = differenceLinkedSet(candidates, singleton);
                 not = difference(not, notConnected);
             } else {
+                depth--;
                 if (not.isEmpty()) {
                     cliques.add(compsub);
                 }
@@ -139,7 +154,15 @@ public class BronKerboshAlgorithm {
         cliques.removeIf(c -> c.size() != maxSize);
     }
 
+    private Node makeNode(int weight) {
+        return new Node(CodeUtils.makeIntWithWeight(weight, graph.getBitRate()));
+    }
+
     public void stop() {
         stop = true;
+    }
+
+    public HemmingGraph getGraph() {
+        return graph;
     }
 }

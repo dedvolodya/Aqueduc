@@ -22,7 +22,7 @@ public class Graph implements Serializable {
         return children;
     }
 
-    public Collection<Node> getNodes() {
+    public List<Node> getNodes() {
         return this.nodes;
     }
 

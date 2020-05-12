@@ -18,8 +18,8 @@ public class CodeUtils {
 
     public static int[] toBinary(int number, int base) {
         final int[] ret = new int[base];
-        for (int i = 0; i < base; i++) {
-            ret[i] = number >> i & 1;
+        for (int i = base - 1; i >= 0; i--) {
+            ret[base - i - 1] = number >> i & 1;
         }
         return ret;
     }

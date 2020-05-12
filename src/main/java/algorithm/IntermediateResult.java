@@ -14,14 +14,16 @@ public class IntermediateResult implements Serializable {
     private Stack<HashSet<Node>> not;
     private Stack<HashSet<Node>> singleton;
     private HemmingGraph g;
+    private HashSet<HashSet<Node>> cliques;
 
     public IntermediateResult(HemmingGraph g, Stack<HashSet<Node>> compsub, Stack<HashSet<Node>> candidates,
-                              Stack<HashSet<Node>> not, Stack<HashSet<Node>> singleton) {
+                              Stack<HashSet<Node>> not, Stack<HashSet<Node>> singleton, HashSet<HashSet<Node>> cliques) {
         this.g = g;
         this.compsub = compsub;
         this.candidates = candidates;
         this.not = not;
         this.singleton = singleton;
+        this.cliques = cliques;
     }
 
     public HemmingGraph getGraph() {
@@ -44,4 +46,7 @@ public class IntermediateResult implements Serializable {
         return this.singleton;
     }
 
+    public HashSet<HashSet<Node>> getCliques() {
+        return cliques;
+    }
 }

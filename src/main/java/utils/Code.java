@@ -1,7 +1,8 @@
 package utils;
 
-import java.util.Arrays;
-import java.util.List;
+import javafx.print.Collation;
+
+import java.util.*;
 
 public class Code {
     private int bitRate;
@@ -30,6 +31,14 @@ public class Code {
         return bitRate;
     }
 
+    public Collection<Integer> getList() {
+        return codes;
+    }
+
+    public void sort() {
+        Collections.sort(codes);
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -38,5 +47,34 @@ public class Code {
             builder.append('\n');
         }
         return builder.toString();
+    }
+
+    public int getDistance() {
+        int minimal = bitRate;
+        for (int code1 : codes) {
+            for (int code2 : codes) {
+                if (code1 != code2) {
+                    int distance = CodeUtils.hemmingDistance(code1, code2, bitRate);
+                    if (distance < minimal) {
+                        minimal = distance;
+                    }
+                }
+            }
+        }
+        return minimal;
+    }
+
+    public int getDistance(int codeIdx) {
+        int minimal = bitRate;
+        int code = codes.get(codeIdx);
+        for (int code1 : codes) {
+            if (code1 != code) {
+                int distance = CodeUtils.hemmingDistance(code1, code, bitRate);
+                if (distance < minimal) {
+                    minimal = distance;
+                }
+            }
+        }
+        return minimal;
     }
 }

@@ -10,6 +10,7 @@ import utils.Serializer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -44,7 +45,7 @@ public class CodeResolver implements Callable<HashSet<Code>> {
     }
 
     private HashSet<Code> convertToCode(HashSet<HashSet<Node>> cliques, int bitRate) {
-        HashSet<Code> result = new HashSet<>();
+        HashSet<Code> result = new LinkedHashSet<>();
         for (HashSet<Node> clique : cliques) {
             List<Integer> codes = new ArrayList<>();
             for (Node nd : clique) {
@@ -67,5 +68,9 @@ public class CodeResolver implements Callable<HashSet<Code>> {
     public HashSet<Code> call() throws Exception {
         HashSet<HashSet<Node>> result = algorithm.findMaxCliques();
         return processResult(result, codeRadix);
+    }
+
+    public HemmingGraph getGraph() {
+        return algorithm.getGraph();
     }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane hgap="10" prefHeight="231.0" prefWidth="223.0" vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MainWindowController">
+    <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="16.0" prefWidth="127.0" GridPane.columnIndex="2" GridPane.rowIndex="4">Code Name</Label>
+    <Button prefHeight="26.0" prefWidth="172.0" GridPane.columnIndex="2" GridPane.rowIndex="7" onAction="#startNewButtonClick">Start new</Button>
+    <Button prefHeight="26.0" prefWidth="173.0" GridPane.columnIndex="2" GridPane.rowIndex="8" onAction="#loadCodeButtonClick">Load</Button>
+    <TextField fx:id="codeName" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+
+</GridPane>

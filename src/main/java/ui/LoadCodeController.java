@@ -2,22 +2,22 @@ package ui;
 
 import program.CodeResolver;
 
-
 import java.util.concurrent.FutureTask;
 
 import static ui.WindowManager.showCodeWindow;
 import static ui.WindowManager.showErrorWindow;
 
-public class NewSearchController extends SearchCodeAbstractController {
+public class LoadCodeController extends SearchCodeAbstractController {
+
 
     public void startButtonClicked() {
         try {
-            int bitRate = Integer.parseInt(this.bitRate.getText());
-            int errorNumber = Integer.parseInt(this.codeDistance.getText());
             computingLabel.setText("computing in process...");
-            resolver = new CodeResolver("code-name").findNewCodes(bitRate, errorNumber);
+            resolver = new CodeResolver("code-name").loadAndContinueSearch();
             futureTask = new FutureTask<>(resolver);
             Thread algorithm = new Thread(futureTask);
+            this.bitRate.setText(String.valueOf(resolver.getGraph().getBitRate()));
+            this.codeDistance.setText(String.valueOf(resolver.getGraph().getDistance()));
             algorithm.start();
             new Thread(printer).start();
         } catch (NumberFormatException e) {
