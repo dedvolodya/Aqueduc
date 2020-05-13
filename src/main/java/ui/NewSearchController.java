@@ -26,17 +26,4 @@ public class NewSearchController extends SearchCodeAbstractController {
         }
 
     }
-
-    public void stopButtonClicked() {
-        if (resolver != null && futureTask != null) {
-            resolver.stopExecuting();
-            computingLabel.setText("Result Saved");
-            try {
-                showCodeWindow(futureTask.get().iterator().next());
-            } catch (Exception e) {
-                e.printStackTrace();
-                showErrorWindow("Unexpected error in algorithm");
-            }
-        }
-    }
 }

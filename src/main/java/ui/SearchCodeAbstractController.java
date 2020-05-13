@@ -45,4 +45,18 @@ public abstract class SearchCodeAbstractController {
     public void setCodeName(String codeName) {
         this.codeName = codeName;
     }
+
+    public void stopButtonClicked() {
+        if (resolver != null && futureTask != null) {
+            resolver.stopExecuting();
+            computingLabel.setText("Result Saved");
+            try {
+                showCodeWindow(futureTask.get().iterator().next());
+            } catch (Exception e) {
+                e.printStackTrace();
+                showErrorWindow("Unexpected error in algorithm");
+            }
+        }
+    }
+
 }

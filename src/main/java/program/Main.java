@@ -23,7 +23,7 @@ public class Main extends Application {
         loader.setLocation(xmlUrl);
         Parent root = loader.load();
 
-        primaryStage.setTitle("Aqueduce");
+        primaryStage.setTitle("Aqueduct");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
