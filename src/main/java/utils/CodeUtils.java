@@ -1,5 +1,12 @@
 package utils;
 
+import graph.Node;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+
 public class CodeUtils {
 
     public static int numberWeight(int num, int size) {
@@ -30,5 +37,17 @@ public class CodeUtils {
                 return i;
             }
         }
+    }
+
+    public static HashSet<Code> convertToCode(HashSet<HashSet<Node>> cliques, int bitRate) {
+        HashSet<Code> result = new LinkedHashSet<>();
+        for (HashSet<Node> clique : cliques) {
+            List<Integer> codes = new ArrayList<>();
+            for (Node nd : clique) {
+                codes.add(nd.getCode());
+            }
+            result.add(new Code(bitRate, codes));
+        }
+        return result;
     }
 }

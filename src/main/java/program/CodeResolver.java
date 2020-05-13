@@ -14,6 +14,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static utils.CodeUtils.convertToCode;
+
 public class CodeResolver implements Callable<HashSet<Code>> {
     private String codeName;
     private BronKerboshAlgorithm algorithm;
@@ -42,18 +44,6 @@ public class CodeResolver implements Callable<HashSet<Code>> {
             Serializer.serializeIntermediateResult(algorithm.getIntermediateResult(), codeName);
         }
         return convertToCode(result, bitRate);
-    }
-
-    private HashSet<Code> convertToCode(HashSet<HashSet<Node>> cliques, int bitRate) {
-        HashSet<Code> result = new LinkedHashSet<>();
-        for (HashSet<Node> clique : cliques) {
-            List<Integer> codes = new ArrayList<>();
-            for (Node nd : clique) {
-                codes.add(nd.getCode());
-            }
-            result.add(new Code(bitRate, codes));
-        }
-        return result;
     }
 
     public void stopExecuting() {

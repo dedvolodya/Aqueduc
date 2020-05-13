@@ -54,7 +54,16 @@ public class BronKerboshAlgorithm {
     }
 
     public HashSet<HashSet<Node>> findMaxCliques() {
-        findAllCliques();
+        try {
+            findAllCliques();
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            //free memory
+            candidateStack.removeAllElements();
+            compsubStack.removeAllElements();
+            singletonStack.removeAllElements();
+            System.out.println(CodeUtils.convertToCode(cliques, graph.getBitRate()).iterator().next());
+        }
         filterCliques();
         return cliques;
     }
